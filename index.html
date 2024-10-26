@@ -1,28 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Water Pump Control</title>
-    <script>
-        function controlPump(action) {
-            const apiKey = "LYNYGZZIWLW0YBH8"; // Replace with your actual Write API Key
-            const field = 4; // The field number where control commands are sent
-            const url = `https://api.thingspeak.com/update?api_key=${apiKey}&field${field}=${action}`;
-
-            fetch(url)
-                .then(response => response.text())
-                .then(data => {
-                    console.log(data); // Log the response
-                    alert("Pump command sent: " + (action === 1 ? "ON" : "OFF"));
-                })
-                .catch(error => console.error("Error:", error));
-        }
-    </script>
 </head>
 <body>
-    <h1>Water Pump Control</h1>
-    <button onclick="controlPump(1)">Turn ON</button>
-    <button onclick="controlPump(0)">Turn OFF</button>
+    <h1>Control the Water Pump</h1>
+    <button onclick="controlPump(1)">Turn ON Pump</button>
+    <button onclick="controlPump(0)">Turn OFF Pump</button>
+
+    <script>
+        function controlPump(state) {
+            var request = new XMLHttpRequest();
+            var channelID = '2716036'; // Replace with your channel ID
+            var writeAPIKey = 'LYNYGZZIWLW0YBH8'; // Replace with your Write API Key
+            var field4 = state; // 0 for OFF, 1 for ON
+
+            var url = `https://api.thingspeak.com/update?api_key=${writeAPIKey}&field4=${field4}`;
+
+            request.open("GET", url, true);
+            request.send();
+            request.onload = function () {
+                if (request.status >= 200 && request.status < 300) {
+                    console.log('Pump control command sent successfully!');
+                } else {
+                    console.error('Error sending pump control command:', request.statusText);
+                }
+            };
+        }
+    </script>
 </body>
 </html>
